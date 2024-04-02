@@ -1,0 +1,107 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+struct Deceased {
+    string name;
+    string dateOfDeath;
+    string causeOfDeath;
+
+};
+
+class FuneralSystem {
+private:
+    static const int MAX_RECORDS = 10;
+    Deceased records[MAX_RECORDS];
+    int numRecords;
+
+public:
+    FuneralSystem() : numRecords(0) {}
+
+    void addDeceasedRecord() {
+        if (numRecords < MAX_RECORDS) {
+            cout << "Enter name of deceased: ";
+            cin >> records[numRecords].name;
+            cout << "Enter date of death (MM-DD-YY): ";
+            cin >> records[numRecords].dateOfDeath;
+            cin.ignore();
+            cout << "Enter cause of death: ";
+            getline(cin, records[numRecords].causeOfDeath);
+            numRecords++;
+        } else {
+            cout << "Cannot add more records. Maximum limit reached." << endl;
+        }
+    }
+
+
+    void viewDeceasedRecord() {
+        if (numRecords == 0) {
+            cout << "No records available." << endl;
+        } else {
+            for (int i = 0; i < numRecords; i++) {
+                cout << "Record " << i + 1 << ":" << endl;
+                cout << "Name: " << records[i].name << endl;
+                cout << "Date of Death: " << records[i].dateOfDeath << endl;
+                cout << "Cause of Death: " << records[i].causeOfDeath << endl;
+            }
+        }
+    }
+
+    void saveDeceasedRecord() {
+        ofstream outFile("deceased_records.txt");
+        if (outFile.is_open()) {
+            for (int i = 0; i < numRecords; i++) {
+                outFile << records[i].name << "," << records[i].dateOfDeath << "," << records[i].causeOfDeath << endl;
+            }
+            outFile.close();
+            cout << "Records saved successfully." << endl;
+        } else {
+            cout << "Unable to open file to save records." << endl;
+        }
+    }
+
+    void deleteRecord() {
+        numRecords = 0;
+        cout << "All records deleted." << endl;
+    }
+};
+
+int main() {
+    FuneralSystem funeralSystem;
+    int choice;
+
+    do {
+        cout << "\nFuneral System Menu:\n"
+             << "1. Add deceased record\n"
+             << "2. View deceased record\n"
+             << "3. Save deceased record\n"
+             << "4. Delete record\n"
+             << "5. Exit\n"
+             << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                funeralSystem.addDeceasedRecord();
+                break;
+            case 2:
+                funeralSystem.viewDeceasedRecord();
+                break;
+            case 3:
+                funeralSystem.saveDeceasedRecord();
+                break;
+            case 4:
+                funeralSystem.deleteRecord();
+                break;
+            case 5:
+                cout << "Exiting program." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+        }
+    } while (choice != 5);
+
+    return 0;
+}
